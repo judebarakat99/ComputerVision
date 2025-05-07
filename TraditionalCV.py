@@ -3,15 +3,14 @@ import cv2
 import numpy as np
 import matplotlib.pyplot as plt
 from tqdm import tqdm
-from sklearn.neighbors import NearestNeighbors
+from sklearn.cluster import KMeans
 from sklearn.svm import SVC
 from sklearn.model_selection import train_test_split
 from sklearn.metrics import classification_report, confusion_matrix
 
 # ---------- Step 1: Load the Dataset ----------
 
-# Set path to RGB-D Object Dataset (download manually if needed)
-DATASET_PATH = "/path/to/rgbd-dataset"  # e.g., "rgbd-dataset/apple_1"
+DATASET_PATH = "rgbd-dataset"  # Make sure the path is correct
 
 categories = [cat for cat in os.listdir(DATASET_PATH) if os.path.isdir(os.path.join(DATASET_PATH, cat))]
 print("Classes found:", categories)
@@ -19,7 +18,7 @@ print("Classes found:", categories)
 def load_images(category, max_imgs=50):
     images = []
     cat_path = os.path.join(DATASET_PATH, category)
-    for video_folder in os.listdir(cat_path)[:1]:  # take first view
+    for video_folder in os.listdir(cat_path)[:1]:  # Use only the first viewpoint
         img_folder = os.path.join(cat_path, video_folder)
         for img_name in os.listdir(img_folder)[:max_imgs]:
             if img_name.endswith(".png"):
@@ -34,7 +33,7 @@ def load_images(category, max_imgs=50):
 data = []
 labels = []
 
-for category in categories[:5]:  # use only 5 classes to reduce runtime
+for category in categories[:5]:  # Use only 5 classes
     imgs = load_images(category, max_imgs=30)
     data.extend(imgs)
     labels.extend([category] * len(imgs))
@@ -56,31 +55,30 @@ for img in tqdm(data):
         descriptor_list.extend(descriptors)
         image_descriptors.append(descriptors)
     else:
-        image_descriptors.append(np.array([]))  # placeholder for missing descriptors
+        image_descriptors.append(np.array([]))  # Placeholder
 
 # ---------- Step 3: Create Visual Vocabulary (Bag of Words) ----------
 
-# Use Nearest Neighbors to find a codebook
-K = 100  # number of visual words
+K = 100  # Number of visual words
 descriptor_array = np.vstack([d for d in image_descriptors if d.size > 0])
 
-print("Building visual vocabulary...")
-nn = NearestNeighbors(n_neighbors=K)
-nn.fit(descriptor_array)
+print("Building visual vocabulary with KMeans...")
+kmeans = KMeans(n_clusters=K, random_state=42)
+kmeans.fit(descriptor_array)
 
-# Histogram of visual words per image
-def build_histogram(descriptors, nn, K):
+# Build histogram for each image
+def build_histogram(descriptors, kmeans, K):
     if descriptors.size == 0:
         return np.zeros(K)
-    distances, indices = nn.kneighbors(descriptors, n_neighbors=1)
+    cluster_indices = kmeans.predict(descriptors)
     histogram = np.zeros(K)
-    for idx in indices:
+    for idx in cluster_indices:
         histogram[idx] += 1
     return histogram
 
-features = np.array([build_histogram(desc, nn, K) for desc in image_descriptors])
+features = np.array([build_histogram(desc, kmeans, K) for desc in image_descriptors])
 
-# ---------- Step 4: Train SVM ----------
+# ---------- Step 4: Train and Evaluate SVM Classifier ----------
 
 X_train, X_test, y_train, y_test = train_test_split(features, labels, test_size=0.3, random_state=42)
 
@@ -94,3 +92,21 @@ print(classification_report(y_test, y_pred))
 
 print("Confusion Matrix:")
 print(confusion_matrix(y_test, y_pred))
+
+# ---------- Step 5: Save Results ----------
+# Ensure the results folder exists
+os.makedirs("results", exist_ok=True)
+
+# Save classification report and confusion matrix to a file
+with open("results/traditional_CV_results.txt", "w") as f:
+    report = classification_report(y_test, y_pred)
+    matrix = confusion_matrix(y_test, y_pred)
+
+    f.write("Traditional CV Report:\n")
+    f.write(report + "\n\n")
+    
+    f.write("Confusion Matrix:\n")
+    for row in matrix:
+        f.write(" ".join(map(str, row)) + "\n")
+
+print("✅ SIFT+SVM results saved to results/traditional_CV_results.txt")
