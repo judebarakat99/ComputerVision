@@ -13,7 +13,8 @@ os.makedirs(graphs_dir, exist_ok=True)
 
 # Filenames
 traditional_file = os.path.join(results_dir, "traditional_CV_results.txt")
-cnn_file = os.path.join(results_dir, "cnn_results.txt")
+#cnn_file = os.path.join(results_dir, "cnn_results.txt")
+cnn_file = os.path.join(results_dir, "deep_cnn_results.txt")
 
 # Helper: parse classification report
 def parse_classification_report(report_text):
