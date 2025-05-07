@@ -1,6 +1,7 @@
 rgbd-dataset/
-results/
-graphs/
+results1/
+graphs1/
+
 CNN_using_ResNet18.py
 COMP61352_Lab_Week4_Torch_CNN_CIFAR_2025.ipynb
-DeeperCNN.py
+vertopal.com_COMP61352_Lab_Week4_Torch_CNN_CIFAR_2025.pdf
