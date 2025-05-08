@@ -1,7 +1,15 @@
 rgbd-dataset/
-results1/
-graphs1/
+results_small_dataset/
+graphs_small_dataset/
+results/
+graphs/
+graphs_big_dataset/
+results_big_dataset/
+graphs_big_dataset 1/
+graphs_small_dataset 2/
 
 CNN_using_ResNet18.py
 COMP61352_Lab_Week4_Torch_CNN_CIFAR_2025.ipynb
 COMP61352_Lab_Week4_Torch_CNN_CIFAR_2025.pdf
+DeeperCNN.ipynb
+TraditionalCV.ipynb
