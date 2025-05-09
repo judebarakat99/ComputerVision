@@ -74,7 +74,7 @@ df_all = pd.concat([df_trad, df_cnn]).reset_index().rename(columns={"index": "cl
 
 # Plotting function
 def save_barplot(metric, title):
-    plt.figure(figsize=(12, 6))
+    plt.figure(figsize=(18, 6))
     sns.barplot(data=df_all, x="class", y=metric, hue="method")
     plt.title(title)
     plt.ylabel(metric.capitalize())
