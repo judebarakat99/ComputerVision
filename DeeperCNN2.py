@@ -78,7 +78,7 @@ labels = tf.keras.utils.to_categorical(labels, num_classes=len(categories))
 
 # ---------- Step 2: Define the CNN Model ----------
 model = models.Sequential([
-    layers.InputLayer(input_shape=(128, 128, 3)),
+    layers.InputLayer(shape=(128, 128, 3)),
     layers.Conv2D(32, (3, 3), activation='relu'),
     layers.MaxPooling2D((2, 2)),
     layers.Conv2D(64, (3, 3), activation='relu'),
@@ -96,7 +96,7 @@ model.compile(optimizer='adam',
               metrics=['accuracy'])
 
 # ---------- Step 3: Train the CNN Model ----------
-history = model.fit(data, labels, epochs=20, batch_size=32, validation_split=0.2)
+history = model.fit(data, labels, epochs=3, batch_size=32, validation_split=0.2)
 
 # ---------- Step 4: Test the Model ----------
 # Evaluate the model on the test set
