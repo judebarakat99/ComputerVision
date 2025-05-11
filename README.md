@@ -12,5 +12,4 @@
 ### Relavent links:
 
 Report:
-https://docs.google.com/document/d/18o5Rb8gTlN6ExO8jcoXgG8j0-8hhtZsnp0qCivkwPfQ/edit?tab=t.0
-
+https://docs.google.com/document/d/1VbpUAnOSxwl8UIvOawBjqr4S5cLEROFUXDnYS4JTt1s/edit?usp=sharing
